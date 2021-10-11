@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document1</title>
+</head>
+<body>
+<div id="root"></div>
+<script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+  console.log(React)
+  console.log(ReactDOM)
+
+  //Class
+  class ClassComponent extends React.Component {
+    render() {
+      return <div> Hellow </div>
+    }
+  }
+  
+
+  //함수
+  function FunctionComponent(){
+    return <div>Hellow Funcion</div>
+  }
+
+  //const를 이용한 화살함수
+  const FunciotnComponent2 = () => <div>Hello22</div>
+
+  //사용
+  //ReactDOM.render(<FunctionComponent />,document.querySelector('#root'))
+
+  //React.createElement 컴포넌트 만들기
+  //React.createElement(
+   // type, //HTML 태그 이름 문자열 | 리액트 컴포넌트 | React.Fragment
+    //[props],// 리액트 컴포넌트에 넣어주는 데이터 객체
+    //[...children] //자식으로 넣어주는 요소들
+  //)
+
+  /*
+  1. 태그 이름 문자열 type
+  ReactDOM.render(
+    React.createElement('h1',null,`type 이 "태그 이름 문자열" 입니당.`),
+    document.querySelector('#root')
+  )
+  */
+
+  /*
+  2.리액트 컴포넌트 type
+  const FunciotnComponentType = () => {
+    return React.createElement(
+      "p",
+      null,
+      `type 이 "리액트 컴포넌트" 입니당.`
+    )
+  }
+  ReactDOM.render(
+    React.createElement(FunciotnComponentType,null,null),
+    document.querySelector('#root')
+  )*/
+
+  /*
+  3. React.Fragment
+  ReactDOM.render(
+    React.createElement(
+      React.Fragment,
+      null,
+      `type 이 "리액트 Fragment" 입니당.`
+    ),
+    document.querySelector('#root')
+  )
+  ==><div id="root">type 이 "리액트 Fragment" 입니당.</div>
+  */
+  
+  /*
+  4. Props or State(개체 형태)
+  함수
+  function Component(props) {
+    return (
+      <div><h1>{props.message} 이것은 함수로 만든 컴포넌트.</h1></div>
+    )
+  }
+  
+
+  class Component extends React.Component{
+    //state 선언 1방법
+    //state = {
+     // count:0
+   // }
+    //state 선언 2방법(생성자)
+    constructor(props){
+      super(props)
+      this.state = {count:0}
+    }
+
+    render(){
+      return(
+        <div>
+          <h1>{this.props.message} 이것은 클래스로 만든 컴포넌트</h1>
+          <p>{this.state.count}</p>
+        </div>
+      )
+    }
+
+    componentDidMount(){
+      setTimeout(()=>{
+        //this.setState({//State 변경 할 수 있게 도와주는 함수
+          //개체를 한꺼번에 변경 하는 방법
+         // count: this.state.count+1
+        //})
+        //개체의 이전 데이터를 받아서 변경.
+        this.setState((previousState) =>{
+          const newState = {count: previousState.count +1}
+          return newState
+        })
+      },500)
+    }
+    // 기본 props 값 지정(클래스에서만)
+    static defaultProps={
+      message:"기본값~"
+    }
+  }
+  // 기본 props 값 지정(클래스 및 함수에서도 사용가능)
+ // Component.defaultProps = {
+   // message:"기본값"
+  //}
+  ReactDOM.render(<Component message="기본값 아니다"/>, document.querySelector('#root'))
+  */
+
+  /*
+  5. Event Handling
+  
+ function Component() {
+   return(
+     <div>
+      <button
+        onClick={() =>{
+          console.log("Clicked")
+        }}
+      >
+      클릭
+      </button>
+      </div>
+   )
+ }*/
+
+ class Component extends React.Component{
+   state = {
+     count:0
+   }
+   constructor(props){
+     super(props)
+     this.click = this.click.bind(this)//현재 클래스를 click에 바인드
+     
+   }
+   render(){
+     return(
+      <div>
+        <p>{this.state.count}</p>
+      <button
+        onClick={this.click}
+      >
+      클릭
+      </button>
+      </div>
+     )
+   }
+   /*setState this 바인딩을 못한다.
+   생성자에서 click메소드를 바인드라는 메소드를 통해서this를 바인드 시키면 아래 처럼 사용 가능.
+   click(){
+    this.setState((state) =>({...state,count:state.count+1})) 
+   }*/
+   //아래 처럼 하면 바인딩 됨
+   click = () =>{
+    this.setState((state) =>({...state,count:state.count+1}))
+   }
+ }
+
+ ReactDOM.render(<Component/>,document.querySelector("#root"))
+
+</script>
+</body>
+</html>
