@@ -108,4 +108,4 @@ class Comp extends React.Component {
 ## Component Lifecycle
 리액트 컴포넌트는 탄생부터 죽음까지 여러지점에서 개발자가 작업이 가능하도록 메소드를 오버라이딩 할 수 있게 해준다.
 
-<img src="https://media.slid.es/uploads/640576/images/4505412/1_sn-ftowp0_VVRbeUAFECMA.png" alt="" height="900" width="2000">   
+<img src="https://media.slid.es/uploads/640576/images/4505412/1_sn-ftowp0_VVRbeUAFECMA.png" alt="" height="450" width="1000">   
