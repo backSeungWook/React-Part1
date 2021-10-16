@@ -13,8 +13,6 @@
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <script type="text/babel">
-  console.log(React)
-  console.log(ReactDOM)
 
   //Class
   class ClassComponent extends React.Component {
@@ -134,54 +132,137 @@
 
   /*
   5. Event Handling
-  
- function Component() {
-   return(
-     <div>
-      <button
-        onClick={() =>{
-          console.log("Clicked")
-        }}
-      >
-      클릭
-      </button>
-      </div>
-   )
- }*/
-
- class Component extends React.Component{
-   state = {
-     count:0
-   }
-   constructor(props){
-     super(props)
-     this.click = this.click.bind(this)//현재 클래스를 click에 바인드
-     
-   }
-   render(){
-     return(
+  function Component() {
+    return(
       <div>
-        <p>{this.state.count}</p>
-      <button
-        onClick={this.click}
-      >
-      클릭
-      </button>
-      </div>
-     )
-   }
-   /*setState this 바인딩을 못한다.
-   생성자에서 click메소드를 바인드라는 메소드를 통해서this를 바인드 시키면 아래 처럼 사용 가능.
-   click(){
-    this.setState((state) =>({...state,count:state.count+1})) 
-   }*/
-   //아래 처럼 하면 바인딩 됨
-   click = () =>{
-    this.setState((state) =>({...state,count:state.count+1}))
-   }
- }
+        <button
+          onClick={() =>{
+            console.log("Clicked")
+          }}
+        >
+        클릭
+        </button>
+        </div>
+    )
+  }
+  // 클래스 이벤트
+  class Component extends React.Component{
+    state = {
+      count:0
+    }
+    constructor(props){
+      super(props)
+      this.click = this.click.bind(this)//현재 클래스를 click에 바인드
+      
+    }
+    render(){
+      return(
+        <div>
+          <p>{this.state.count}</p>
+        <button
+          onClick={this.click}
+        >
+        클릭
+        </button>
+        </div>
+      )
+    }
+    //setState this 바인딩을 못한다.
+    //생성자에서 click메소드를 바인드라는 메소드를 통해서this를 바인드 시키면 아래 처럼 사용 가능.
+    //click(){
+     // this.setState((state) =>({...state,count:state.count+1})) 
+    //}
+    //아래 처럼 하면 바인딩 됨
+    click = () =>{
+      this.setState((state) =>({...state,count:state.count+1}))
+    }
+  }
+  */
+ 
+  
+  //라이프 사이클
+  let i =0
+  class App extends React.Component{
+    state = {
+      age:30,
+      list: []
+    }
+    interval = null;
+    constructor(props){
+      super(props)
+      console.log("constructor",props)
+    }
+    render(){
+      console.log("Render")
+      return(
+        <div id="list" style={{height:100, overflow:"scroll"}}>
+          {this.state.list.map(i=>{
+            return <div>{i}</div>
+          })}
+          
+        </div>
+      )
+    }
+    // Componet 생성 맻 마운트 예제
+    //componentWillMount(){
+     // console.log('componentWillMount')
+   // }
+    //렌더가 실행되기 전에 매번 호출.
+    static getDerivedStateFromProps(newxProps,prevState){
+      console.log('getDerivedStateFromProps',newxProps,prevState)
 
- ReactDOM.render(<Component/>,document.querySelector("#root"))
+      //새로운 State 설정 가능.
+      //return {
+      //  age:390
+      // }
+      return null
+    }
+    componentDidMount(){
+      setInterval(() =>{
+        this.setState((state) =>({
+          list: [...state.list,i++]
+        }))
+      },1000)
+    }
+    //Component props, state 변경
+    //componentWillReceiveProps(nextProps){
+    //  console.log('componentWillReceiveProps',nextProps)
+   // }
+    shouldComponentUpdate(nextProps,nextState){
+      console.log('shouldComponentUpdate',nextProps , nextState)
+      //반환값이 true: 랜더링되고, false: State,Props가 변경이 되어도 랜더링 되지 않음.
+      return true
+    }
+    //랜더 되기 전.
+    //componentWillUpdate(nextProps,nextState){
+    //  console.log('componentWillUpdate',nextProps,nextState)
+    //}
+    //랜더 전 과 랜더 후 를 비교
+    getSnapshotBeforeUpdate(prevProps,prevState){
+      //리턴값은 Snapshot null Snapshot 저장 하지 않는다.
+      if(prevState.list.length === this.state.list.length) return null
+
+      const list = document.querySelector('#list')
+      return list.scrollHeight - list.scrollTop
+    }
+
+    //랜더 후 
+    componentDidUpdate(prevProps,prevState,snapshot){
+      console.log('componentWillUpdate',prevProps,prevState,snapshot)
+      if(snapshot === null) return 
+      const list = document.querySelector('#list')
+      list.scrollTop = list.scrollHeight - snapshot
+    }
+
+    componentWillUnmount(){
+      clearInterval(interval)
+    }
+
+    componentDidCatch(error,info){
+      console.log('에러시 조치 내용')
+    }
+  }
+  ReactDOM.render(<App name="B"/>,document.querySelector("#root"))
 
 </script>
 </body>

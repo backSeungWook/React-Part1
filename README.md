@@ -109,3 +109,109 @@ class Comp extends React.Component {
 리액트 컴포넌트는 탄생부터 죽음까지 여러지점에서 개발자가 작업이 가능하도록 메소드를 오버라이딩 할 수 있게 해준다.
 
 <img src="https://media.slid.es/uploads/640576/images/4505412/1_sn-ftowp0_VVRbeUAFECMA.png" alt="" height="450" width="1000">   
+
+```js
+class App extends React.Component{
+  state = {
+    age:30
+  }
+  constructor(props){
+    super(props)
+    console.log("constructor",props)
+  }
+  render(){
+    console.log("Render")
+    return(
+      <div>
+        <h2>
+          Hello  {this.props.name} - {this.state.age}
+        </h2>
+      </div>
+    )
+  }
+  //Componet 생성 맻 마운트 예제
+  //=> 16.3 이상 버전에서는 getDerivedStateFromProps
+  componentWillMount(){
+    console.log('componentWillMount')
+  }
+  componentDidMount(){
+    setInterval(()=>{
+      //State가 변경 되면 다시 랜더링 됨..
+        this.setState((state) =>({
+          age:state.age+1
+      }))
+    },1000)
+  }
+  //Component props, state 변경
+  componentWillReceiveProps(nextProps){
+    console.log('componentWillReceiveProps',nextProps)
+  }
+  shouldComponentUpdate(nextProps,nextState){
+    console.log('shouldComponentUpdate',nextProps , nextState)
+    //반환값이 true: 랜더링되고, false: State,Props가 변경이 되어도 랜더링 되지 않음.
+    return true
+  }
+  //랜더 되기 전.
+  componentWillUpdate(nextProps,nextState){
+    console.log('componentWillUpdate',nextProps,nextState)
+  }
+  //랜더 후 
+  componentDidUpdate(prevProps,prevState){
+    console.log('componentWillUpdate',prevProps,prevState)
+  }
+}
+ReactDOM.render(<App name="B"/>,document.querySelector("#root"))
+```
+`componentWillReceiveProps:`  => `getDerivedStateFromProps`  
+props 를 새로 지정했을 때 바로 호출, state의 변경에는 반응 하지 않음.  
+props 의 값에 따라 state 를 변경해야 한다면,setState 를 이용해 state 를 변경  
+그러면 다음 이벤트로 각각 가는것이 아니라 한번에 변경됩니다.  
+`즉 state 변경 시, props변경 시 shouldComponentUpdate를 2번 호출이 아닌 `  
+`한번에 state 변경 값과 props 변경 값을 shouldComponentUpdate 호출하게 됨.`
+
+`shouldComponentUpdate`
+props 만 변경되어도,state 만 변경되어도 props와 state가 같이 변경되어도 호출 된다.  
+인자 값은 newProps, newState  
+반환값은 boolean이며, true: 랜더링되고, false: State,Props가 변경이 되어도 랜더링 되지 않음. `디볼트는 True`
+
+`componentWillUpdate`  => `getSnapshotBeforeUpdate`  
+컴포넌트가 재 랜더링 되기 직전에 호출
+여기선 setState 같은 것을 쓰면 안됨.
+
+`componentDidUpdate`
+컴포넌트가 재 랜더링을 마치면 호출
+
+`componentWillUnmount`
+언마운트 되기 직전에 호출.  
+component가 사용하고 있는 메모리 중에 사용하지 않는 것들은 정리 및 API 요청 시 응답을 받기 전에 언마운트 된다면 API 응답을 받지 않겠다라는 로직을 구현.
+
+16.3 버전 이상에서는 라이프 사이클 변경  
+<img src="https://media.slid.es/uploads/640576/images/6618737/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2019-10-05_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_11.43.29.png" alt="" height="450" width="1000">   
+constructor  
+componentWillMount => getDerivedStateFromProps  
+render  
+componentDidMount  
+componentWillReceiveProps  => getDerivedStateFromProps  
+shouldComponentUpdate  
+render  
+componentWillUpdate  => getSnapshotBeforeUpdate  
+(dom 에  적용)  
+componentDidUpdate  
+componentWillUnmount  
+
+`componet 에러 캐치` componentDidCatch <a href="https://ko.reactjs.org/docs/error-boundaries.html">Error Boundaries</a>를 사용하면 더욱 쉽게 구현 가능.
+
+# React Project 생성.
+<a href="https://create-react-app.dev">CRA</a>
+```
+npx create-react-app project-name
+```
+
+## VScode ESLint 플러그인 설치 시 ESLint 설정에 의거하여 소스 상에서 표시.
+
+## <a href="https://slides.com/woongjae/react2021#/16">husky</a> 
+git push 하기 전에 어떠한 로직(test,ESLint.. 등)을 실행
+
+## <a href="https://slides.com/woongjae/react2021#/17">lint-staged</a>
+git commit 하기 전에 어떠한 로직을 실행.
+
